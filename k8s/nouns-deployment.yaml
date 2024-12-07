@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nouns
+  namespace: sentence
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nouns
+  template:
+    metadata:
+      labels:
+        app: nouns
+    spec:
+      containers:
+      - name: nouns
+        image: nouns:latest
+        ports:
+        - containerPort: 8081

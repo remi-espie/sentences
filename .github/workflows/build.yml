@@ -1,0 +1,122 @@
+name: Build Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+    lint:
+      name: Lint the Rust packages
+      uses: ./.github/workflows/lint.yml
+
+    build-verbs:
+      needs: lint
+      permissions:
+        packages: write
+
+      env:
+        REGISTRY: ghcr.io
+        IMAGE_NAME: ${{ github.repository }}
+
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v4
+        name: Checkout project
+
+      - uses: docker/login-action@v2
+        name: Log in to the container registry
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/metadata-action@v4
+        name: Extract metadata (tags, labels) for Docker
+        id: meta-verbs
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/verbs
+          tags: |
+            latest
+
+      - uses: docker/build-push-action@v4
+        name: Build and push the Docker image
+        with:
+          context: ./verbs
+          push: true
+          tags: ${{ steps.meta-front.outputs.tags }}
+          labels: ${{ steps.meta-front.outputs.labels }}
+
+    build-nouns:
+      needs: lint
+      permissions:
+        packages: write
+
+      env:
+        REGISTRY: ghcr.io
+        IMAGE_NAME: ${{ github.repository }}
+
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v4
+        name: Checkout project
+
+      - uses: docker/login-action@v2
+        name: Log in to the container registry
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/metadata-action@v4
+        name: Extract metadata (tags, labels) for Docker
+        id: meta-nouns
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/nouns
+          tags: |
+            latest
+
+      - uses: docker/build-push-action@v4
+        name: Build and push the Docker image
+        with:
+          context: ./nouns
+          push: true
+          tags: ${{ steps.meta-back.outputs.tags }}
+          labels: ${{ steps.meta-back.outputs.labels }}
+
+    build-aggregator:
+      needs: lint
+      permissions:
+        packages: write
+
+      env:
+        REGISTRY: ghcr.io
+        IMAGE_NAME: ${{ github.repository }}
+
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@v4
+        name: Checkout project
+
+      - uses: docker/login-action@v2
+        name: Log in to the container registry
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/metadata-action@v4
+        name: Extract metadata (tags, labels) for Docker
+        id: meta-aggregator
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/aggregator
+          tags: |
+            latest
+
+      - uses: docker/build-push-action@v4
+        name: Build and push the Docker image
+        with:
+          context: ./aggregator
+          push: true
+          tags: ${{ steps.meta-back.outputs.tags }}
+          labels: ${{ steps.meta-back.outputs.labels }}

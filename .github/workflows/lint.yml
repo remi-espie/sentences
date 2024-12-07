@@ -1,0 +1,68 @@
+name: Lint Rust package
+
+on:
+  push:
+    branches:
+      - '**'
+      - '!main'
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout project
+
+      - uses: ./.github/actions/init
+        name: Common Steps
+
+      - name: Check formatting
+        run: cargo fmt --check
+
+      - name: Check linting
+        run: cargo clippy -- -D warnings
+
+  build-verbs:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout project
+
+      - uses: ./.github/actions/init
+        name: Common Steps
+
+      - name: Build verbs
+        run: cargo build -p verbs --release
+
+  build-nouns:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout project
+
+      - uses: ./.github/actions/init
+        name: Common Steps
+
+      - name: Build nouns
+        run: cargo build -p nouns --release
+
+  build-aggregator:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout project
+
+      - uses: ./.github/actions/init
+        name: Common Steps
+
+      - name: Build aggregator
+        run: cargo build -p aggregator --release
