@@ -44,8 +44,8 @@ jobs:
         with:
           context: ./verbs
           push: true
-          tags: ${{ steps.meta-front.outputs.tags }}
-          labels: ${{ steps.meta-front.outputs.labels }}
+          tags: ${{ steps.meta-verbs.outputs.tags }}
+          labels: ${{ steps.meta-verbs.outputs.labels }}
 
     build-nouns:
       needs: lint
@@ -81,8 +81,8 @@ jobs:
         with:
           context: ./nouns
           push: true
-          tags: ${{ steps.meta-back.outputs.tags }}
-          labels: ${{ steps.meta-back.outputs.labels }}
+          tags: ${{ steps.meta-nouns.outputs.tags }}
+          labels: ${{ steps.meta-nouns.outputs.labels }}
 
     build-aggregator:
       needs: lint
@@ -118,5 +118,5 @@ jobs:
         with:
           context: ./aggregator
           push: true
-          tags: ${{ steps.meta-back.outputs.tags }}
-          labels: ${{ steps.meta-back.outputs.labels }}
+          tags: ${{ steps.meta-aggregator.outputs.tags }}
+          labels: ${{ steps.meta-aggregator.outputs.labels }}
