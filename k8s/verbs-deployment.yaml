@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: verbs
-        image: verbs:latest
+        image: ghcr.io/remi-espie/sentences/verbs:latest
         ports:
         - containerPort: 8082

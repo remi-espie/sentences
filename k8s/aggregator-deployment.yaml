@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: aggregator
-        image: aggregator:latest
+        image: ghcr.io/remi-espie/sentences/aggregator:latest
         ports:
         - containerPort: 8080

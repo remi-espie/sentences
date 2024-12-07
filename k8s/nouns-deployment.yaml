@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: nouns
-        image: nouns:latest
+        image: ghcr.io/remi-espie/sentences/nouns:latest
         ports:
         - containerPort: 8081
