@@ -8,7 +8,7 @@ COPY src src
 
 RUN cargo build --release
 
-FROM scratch AS prod
+FROM debian:bookworm-slim AS prod
 
 COPY --from=build /app/target/release/nouns /nouns
 
