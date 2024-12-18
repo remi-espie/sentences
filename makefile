@@ -12,6 +12,7 @@ start-cluster:
 
 deploy:
 	kubectl create -f https://github.com/kyverno/kyverno/releases/download/v1.13.2/install.yaml
+	$(MAKE) wait-for-kyverno
 	kubectl apply -f kyverno/
 	kubectl apply -f k8s/
 
@@ -23,3 +24,11 @@ destroy:
 run:
 	$(MAKE) create-cluster
 	$(MAKE) deploy
+
+wait-for-kyverno:
+	@echo "Waiting for Kyverno to be available..."
+	@until kubectl get pods -n kyverno | grep -m 1 'kyverno.*1/1.*Running'; do \
+		sleep 2; \
+	done
+	sleep 10
+	@echo "Kyverno is available."
