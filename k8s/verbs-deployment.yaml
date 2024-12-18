@@ -16,5 +16,11 @@ spec:
       containers:
       - name: verbs
         image: ghcr.io/remi-espie/sentences/verbs:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "0.2"
+        securityContext:
+          privileged: false
         ports:
         - containerPort: 8082
