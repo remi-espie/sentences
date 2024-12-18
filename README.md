@@ -7,7 +7,7 @@ At core, this is a simple app composed of:
 
 The app is designed to be deployed on a Kubernetes cluster. It was developed on a **k3d cluster**, but should work on any Kubernetes cluster.
 
-It will be assumed that the user has k3d and kubectl installed.
+It will be assumed that the user has **k3d**, **kubectl** and **helm** installed.
 
 To create the cluster, deploy the app and its security, run the following commands:
 

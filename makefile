@@ -1,5 +1,5 @@
 create-cluster:
-	k3d cluster -p 8080:80@loadbalancer create ssi
+	k3d cluster create ssi
 
 delete-cluster:
 	k3d cluster delete ssi
@@ -11,24 +11,22 @@ start-cluster:
 	k3d cluster start ssi
 
 deploy:
-	kubectl create -f https://github.com/kyverno/kyverno/releases/download/v1.13.2/install.yaml
-	$(MAKE) wait-for-kyverno
+	helm repo add kyverno https://kyverno.github.io/kyverno/
+	helm repo add falcosecurity https://falcosecurity.github.io/charts
+	helm repo update
+	helm install kyverno kyverno/kyverno -n kyverno --create-namespace
+	helm install falco falcosecurity/falco -n falco --create-namespace
+	echo "Waiting for kyverno and falco to be ready..."
+	sleep 30
 	kubectl apply -f kyverno/
 	kubectl apply -f k8s/
 
 destroy:
 	kubectl delete -f kyverno/
-	kubectl delete -f https://github.com/kyverno/kyverno/releases/download/v1.13.2/install.yaml
+	helm uninstall kyverno -n kyverno
+	helm uninstall falco -n falco
 	kubectl delete -f k8s/
 
 run:
 	$(MAKE) create-cluster
 	$(MAKE) deploy
-
-wait-for-kyverno:
-	@echo "Waiting for Kyverno to be available..."
-	@until kubectl get pods -n kyverno | grep -m 1 'kyverno.*1/1.*Running'; do \
-		sleep 2; \
-	done
-	sleep 10
-	@echo "Kyverno is available."
